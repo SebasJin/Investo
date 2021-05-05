@@ -28,8 +28,15 @@ So, what you would do is  open up your termina (control alt t) if you closed it,
 Invest will now ask you for an api key, which you can get by going to https://www.alphavantage.co/support/#api-key
 where you can get a free api key. Once you run through the process, take your api key and type it in.
 
-8. type in   python3 main.py    once again, and Investo will display a messagec
+8. type in   python3 main.py    once again, and Investo will display a message telling you all possible commands to take
+
+9. Get started with your program. A simple thing to do is to type in stockoverview, and then enter a ticker symbol such as GE.
+
+10. To see the results of your program, check the tmpdata folder to see the stock data you have downloaded.
+
+11. Finally, for further help, please check the included help file.
 
 NOTE: If you type anything incorrectly such as your api key, delete the file userdata.json, and run the command 
-python3 main.py 
+python3 main.py, once again, you will be promted to enter your preffered username, and your api key. This will
+not affect any other files you have. 
 ________________________________________________________________________________________________________________________________________
