@@ -1,7 +1,6 @@
 # Import
 import requests  # Downloads Required Stock Data
-import pickle  # stores UserData and others
-import json
+import json # stores UserData and others
 import os
 from os import path
 from time import sleep
@@ -11,7 +10,7 @@ import string
 global url
 url = ''
 global ticker
-ticker = 'BHLB'
+ticker = []
 global user_info
 user_info = []
 
@@ -44,19 +43,10 @@ intro_program_message = """
             ULTRA IMPORTANT, This program can be read by anyone, There is NO ENCRYPTION Or Password System, and
             Only one user is supported, so copy this program into others home directory if they want to use it.
             """
-""""
-userdata=['SebasJin','FFG80DUAQ25JOM2R']
-# Opening JSON file
-# SebasJin
-# FFG80DUAQ25JOM2R
-fp=open('userdata.json','w')
-json.dump(userdata,fp)
-fp.close()
-"""
 
 
-def intro(
-):  # checks to see if userdata is placed, and if not, then run through a intro process, else, pass
+
+def intro():  # checks to see if userdata is placed, and if not, then run through a intro process, else, pass
     if path.exists("userdata.json"):
         with open('userdata.json') as fp:
             user_info = json.load(fp)
@@ -98,8 +88,7 @@ def intro(
         quit()
 
 
-def informational_message(
-):  ## Need to optimize message (the bold things), use {} and .format along with print(' ' *40 to make spaces)
+def informational_message():  ## Need to optimize message (the bold things), use {} and .format along with print(' ' *40 to make spaces)
     print("""                                   
     |----------------------------------------------------------------------------------------------------------------------|
     |                                               """ + Color.BOLD +
@@ -128,10 +117,12 @@ def stocklookup():
     with open('userdata.json') as fp:
         user_info = json.load(fp)
     stockstart()
-    url = 'https://www.alphavantage.co/query?function=OVERVIEW&symbol=' + ticker + '&apikey=' + user_info[
-        1]
+    url = 'https://www.alphavantage.co/query?function=OVERVIEW&symbol=' + ticker[0] + '&apikey=' + user_info[1]
+    print(user_info)
+    print(url)
+    print(ticker)
     downloader(url)
-    print('You are obtaining stock fundamentals for ' + ticker +
+    print('You are obtaining stock fundamentals for ' + ticker[0] +
           '. Please ensure that your internet is functional.')
 
 
@@ -139,28 +130,31 @@ def stockprice():
     with open('userdata.json') as fp:
         user_info = json.load(fp)
     stockstart()
-    url = 'https://www.alphavantage.co/query?function=OVERVIEW&symbol=' + ticker + '&apikey=' + user_info[1]
+    url = 'https://www.alphavantage.co/query?function=OVERVIEW&symbol=' + ticker[0] + '&apikey=' + user_info[1]
     print(user_info)
     print(url)
     print(ticker)
-    request = requests.get(url, allow_redirects=True)
-    print(request.headers.get('content-type'))
-    myfile = requests.get(url)
-    open(os.getcwd() + '/tmpdata/data.json', 'wb').write(myfile.content)
-
+    # NEED TO CHANGE URL, GET RID OF THE PRINT STATEMENTS ABOVE
+    downloader(url)
+    print('You are obtaining stock fundamentals for ' + ticker[0] +
+          '. Please ensure that your internet is functional.')
+    pass
 
 def stockstart():
-    ticker = input('Enter Your Desired Ticker Symbol: ')
-    ticker = ticker.upper()
+    tempticker = input('Enter Your Desired Ticker Symbol: ')
+    tempticker = tempticker.upper()
+    ticker.append(tempticker)
+    filetype()
 
 
-def filetype(type):
-    filename = []
-    filename.append(type)
-    filename.append(random.randint(1, 10))
-    for i in filename:
-        filename.append(random.choice(string.ascii_letters))
-    ''.join(filename)
+def filetype():
+    global filename
+    tempfilename = []
+    x = [1,2,3,4,5,6,7,8,9,10]
+    tempfilename.append(str(random.randint(1, 10)))
+    for i in x:
+        tempfilename.append(random.choice(string.ascii_letters))
+    filename = ''.join(tempfilename)
 
 
 def downloader(url):
@@ -168,16 +162,37 @@ def downloader(url):
     request = requests.get(url, allow_redirects=True)
     print(request.headers.get('content-type'))
     myfile = requests.get(url)
-    open(os.getcwd() + '/tmpdata/data.json', 'wb').write(myfile.content)
+    open(os.getcwd() + '/tmpdata/data-' + filename + '.json', 'wb').write(myfile.content)
 
 
 intro()
 
 while True:
-    # need to read pickle file for api key and data
     informational_message()
     UserChoice = input(
         'Enter your desired command, exclude the ticker symbol: ')
     if UserChoice == 'stocklookup':
         stocklookup()
-    # NEED TO ADD MORE FUNCTIONAclear
+    if UserChoice == 'quit':
+        quit()
+    if UserChoice == 'q':
+      quit()
+    if UserChoice == 'help':
+      informational_message
+
+    # NEED TO ADD MORE FUNCTIONALITY, 
+
+
+"""
+NEAR GOALS: ADD MORE COMMANDS,
+: GET THE TYPE OFF FILE TO BE DISPLAYED IN NAME OF FILES (EX. A FILE WHICH HAS A TYPE OF OVERVIEW,
+WOULD HAVE THAT IN IT'S TITLE)
+: GET FILETYPE TO DISPLAY THE TICKER OF IT, ALONG WITH THE DATE.
+: ADD METHOD OF GETTING STOCK PRICE EASILY
+: ADD COLORFUL TEXT TO MESSAGES 
+
+MIDDLE GOALS:
+: ADD METHOD OF OPENING DOWNLOADED FILES, AND DISPLAYING LITLE PORTIONS OF IT AS A PREVIEW
+EX: IF I WERE TO TYPE IN stocklookup, AND THEN ENTER IN ibm AS MY TICKER, I WOULD LIKE FOR THE PROGRAM TO 
+PRINT OUT INFORMATION SUCH AS THE PE RATION/EPS/ETC IN LITTLE BITE SIZED PEICES.
+"""
