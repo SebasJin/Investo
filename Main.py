@@ -31,18 +31,17 @@ class Color:
 UserChoice = ''
 
 intro_program_message = """
-                                ------- + Investo by SebasJin + -------
+                                """+ Color.YELLOW + """------- + Investo by SebasJin + -------""" + Color.END + """
                                        
             Investo is a free collection of services to help you obtain valuable data on investing 
             FYI, Investo has not been ported to windows and only works on most linux distributions
 
             This service doesn't mean to serve as investment advice, and is ONLY for Educational purposes 
-            * In order to begin this program, you must obtain a free Alphavantage api key and setup a Username**
-            * This must be done by going to the website  https://www.alphavantage.co/support/#api-key**
+            * In order to begin this program, you must obtain a free Alphavantage api key and setup a Username *
+            * This must be done by going to the website  https://www.alphavantage.co/support/#api-key *
 
-            ULTRA IMPORTANT, This program can be read by anyone, There is NO ENCRYPTION Or Password System, and
-            Only one user is supported, so copy this program into others home directory if they want to use it.
-            """
+            """ + Color.RED + """ULTRA IMPORTANT, This program can be read by anyone, There is NO ENCRYPTION Or Password System, and
+            Only one user is supported, so copy this program into others home directory if they want to use it. \n\n\n""" + Color.END
 
 
 
@@ -50,8 +49,9 @@ def intro():  # checks to see if userdata is placed, and if not, then run throug
     if path.exists("userdata.json"):
         with open('userdata.json') as fp:
             user_info = json.load(fp)
-        print('You are being logged in as ' + user_info[0],
-              'and with an api key of ' + user_info[1])
+        print(intro_program_message)
+        print('\n\n ' + Color.CYAN + 'You are being logged in as ' + user_info[0],
+              'and with an api key of ' + user_info[1] + Color.END)
 
         if not path.exists('tmpdata'):
             os.mkdir('tmpdata')
@@ -91,13 +91,16 @@ def intro():  # checks to see if userdata is placed, and if not, then run throug
 def informational_message():  ## Need to optimize message (the bold things), use {} and .format along with print(' ' *40 to make spaces)
     print("""                                   
     |----------------------------------------------------------------------------------------------------------------------|
-    |                                               """ + Color.BOLD +
-          """   -INFO-""" + Color.END +
+    |                                                  """ + Color.BOLD + Color.GREEN + Color.UNDERLINE + """-INFO-""" + Color.END +
           """                                                              |
     |----------------------------------------------------------------------------------------------------------------------|
-    With your API key, you may now begin to gather financial date. Note that you may request data up to 5 times per minute
+    With your API key, you may now begin to gather financial date. Note: You may request data only up to 5 times per minute
 
     Here is a list of the programs built-in functions.
+
+    Typing in 'help' will show more information on this program, check it out if you are new. 
+
+    Typing in 'q' or 'quit' will end the program. You can also use the  Control + c command if something wacky happens
 
     Typing in 'stocklookup' will prompt you to enter in a stock ticker which will give a brief summary of it's fundamentals 
     and provide a json file which can be used for more thorough analysis. Typing in a '-m' after 'stocklookup' will now 
@@ -105,11 +108,9 @@ def informational_message():  ## Need to optimize message (the bold things), use
 
     Typing in 'stockprice' will prompt you to enter a stock ticker and give you it's current/last price. That's all
     
-    Typing in i will show more information within this program
-
     NOTE: MORE FUNCTIONALITY WILL BE ADDED LATER, and when entering a ticker symbol, uppercase is not required
     |----------------------------------------------------------------------------------------------------------------------|
-    |----------------------------------------------------------------------------------------------------------------------|\n\n
+    |----------------------------------------------------------------------------------------------------------------------|\n\n\n
     """)
 
 
@@ -118,12 +119,9 @@ def stocklookup():
         user_info = json.load(fp)
     stockstart()
     url = 'https://www.alphavantage.co/query?function=OVERVIEW&symbol=' + ticker[0] + '&apikey=' + user_info[1]
-    print(user_info)
-    print(url)
-    print(ticker)
     downloader(url)
-    print('You are obtaining stock fundamentals for ' + ticker[0] +
-          '. Please ensure that your internet is functional.')
+    print(Color.RED + '\nYou are obtaining stock fundamentals for ' + ticker[0] +
+          '. Please ensure that your internet is functional.' + Color.END)
 
 
 def stockprice():
@@ -131,17 +129,15 @@ def stockprice():
         user_info = json.load(fp)
     stockstart()
     url = 'https://www.alphavantage.co/query?function=OVERVIEW&symbol=' + ticker[0] + '&apikey=' + user_info[1]
-    print(user_info)
-    print(url)
-    print(ticker)
-    # NEED TO CHANGE URL, GET RID OF THE PRINT STATEMENTS ABOVE
+ 
+    # NEED TO CHANGE URL
     downloader(url)
     print('You are obtaining stock fundamentals for ' + ticker[0] +
           '. Please ensure that your internet is functional.')
     pass
 
 def stockstart():
-    tempticker = input('Enter Your Desired Ticker Symbol: ')
+    tempticker = input(Color.BLUE + 'Enter Your Desired Ticker Symbol: ' + Color.END)
     tempticker = tempticker.upper()
     ticker.append(tempticker)
     filetype()
@@ -150,7 +146,7 @@ def stockstart():
 def filetype():
     global filename
     tempfilename = []
-    x = [1,2,3,4,5,6,7,8,9,10]
+    x = [1,2,3]
     tempfilename.append(str(random.randint(1, 10)))
     for i in x:
         tempfilename.append(random.choice(string.ascii_letters))
@@ -158,7 +154,7 @@ def filetype():
 
 
 def downloader(url):
-    print(url)
+    print('\n\nYour url is' + url)
     request = requests.get(url, allow_redirects=True)
     print(request.headers.get('content-type'))
     myfile = requests.get(url)
@@ -167,32 +163,33 @@ def downloader(url):
 
 intro()
 
+
 while True:
     informational_message()
-    UserChoice = input(
-        'Enter your desired command, exclude the ticker symbol: ')
+    UserChoice = input(Color.BLUE + 'Enter Your desired command, exculde the ticker symbol: ' + Color.END)
     if UserChoice == 'stocklookup':
         stocklookup()
     if UserChoice == 'quit':
         quit()
     if UserChoice == 'q':
-      quit()
+        quit()
     if UserChoice == 'help':
-      informational_message
+        print("""For Further Information, look for the file README.md and open it up.
+            If you don\'t have it, go to https://github.com/SebasJin/Investo, and read the README.md file. """)
 
     # NEED TO ADD MORE FUNCTIONALITY, 
 
 
 """
-NEAR GOALS: ADD MORE COMMANDS,
+NEAR GOALS (kinda like a roadmap?): ADD MORE COMMANDS,
 : GET THE TYPE OFF FILE TO BE DISPLAYED IN NAME OF FILES (EX. A FILE WHICH HAS A TYPE OF OVERVIEW,
 WOULD HAVE THAT IN IT'S TITLE)
 : GET FILETYPE TO DISPLAY THE TICKER OF IT, ALONG WITH THE DATE.
 : ADD METHOD OF GETTING STOCK PRICE EASILY
-: ADD COLORFUL TEXT TO MESSAGES 
 
 MIDDLE GOALS:
 : ADD METHOD OF OPENING DOWNLOADED FILES, AND DISPLAYING LITLE PORTIONS OF IT AS A PREVIEW
 EX: IF I WERE TO TYPE IN stocklookup, AND THEN ENTER IN ibm AS MY TICKER, I WOULD LIKE FOR THE PROGRAM TO 
 PRINT OUT INFORMATION SUCH AS THE PE RATION/EPS/ETC IN LITTLE BITE SIZED PEICES.
+: GET PROPER DOCUMENTATION
 """
