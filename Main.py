@@ -6,6 +6,7 @@ from os import path
 from time import sleep
 import random
 import string
+from datetime import datetime
 
 global url
 url = ''
@@ -146,10 +147,13 @@ def stockstart():
 def filetype():
     global filename
     tempfilename = []
-    x = [1,2,3]
+    x = ['thing one', 'thing two', 'thing three']
     tempfilename.append(str(random.randint(1, 10)))
     for i in x:
         tempfilename.append(random.choice(string.ascii_letters))
+    now = datetime.now()    
+    dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+    tempfilename.append(dt_string)
     filename = ''.join(tempfilename)
 
 
@@ -158,7 +162,7 @@ def downloader(url):
     request = requests.get(url, allow_redirects=True)
     print(request.headers.get('content-type'))
     myfile = requests.get(url)
-    open(os.getcwd() + '/tmpdata/data-' + filename + '.json', 'wb').write(myfile.content)
+    open(os.getcwd() + '/tmpdata/data' + filename + '.json', 'wb').write(myfile.content)
 
 
 intro()
@@ -184,7 +188,7 @@ while True:
 NEAR GOALS (kinda like a roadmap?): ADD MORE COMMANDS,
 : GET THE TYPE OFF FILE TO BE DISPLAYED IN NAME OF FILES (EX. A FILE WHICH HAS A TYPE OF OVERVIEW,
 WOULD HAVE THAT IN IT'S TITLE)
-: GET FILETYPE TO DISPLAY THE TICKER OF IT, ALONG WITH THE DATE.
+: GET FILETYPE TO DISPLAY THE TICKER OF IT
 : ADD METHOD OF GETTING STOCK PRICE EASILY
 
 MIDDLE GOALS:
