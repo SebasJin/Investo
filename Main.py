@@ -1,19 +1,17 @@
 # Import
 import requests  # Downloads Required Stock Data
 import json # stores UserData and others
-import os
+import os # ya just need it
 from os import path
 from time import sleep
-import random
-import string
 from datetime import datetime
 
 global url
 url = ''
-global ticker
-ticker = []
 global user_info
 user_info = []
+global type
+type = ''
 
 
 class Color:
@@ -118,48 +116,55 @@ def informational_message():  ## Need to optimize message (the bold things), use
 def stocklookup():
     with open('userdata.json') as fp:
         user_info = json.load(fp)
+    type = 'Overview'
     stockstart()
-    url = 'https://www.alphavantage.co/query?function=OVERVIEW&symbol=' + ticker[0] + '&apikey=' + user_info[1]
+    url = 'https://www.alphavantage.co/query?function=OVERVIEW&symbol=' + ticker + '&apikey=' + user_info[1]
     downloader(url)
-    print(Color.RED + '\nYou are obtaining stock fundamentals for ' + ticker[0] +
+    print(Color.RED + '\nYou are obtaining stock fundamentals for ' + ticker +
           '. Please ensure that your internet is functional.' + Color.END)
 
 
 def stockprice():
+    type = 'dailyprice'
     with open('userdata.json') as fp:
         user_info = json.load(fp)
     stockstart()
-    url = 'https://www.alphavantage.co/query?function=OVERVIEW&symbol=' + ticker[0] + '&apikey=' + user_info[1]
- 
+    url = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=' + ticker + '&apikey=' + user_info[1]
     # NEED TO CHANGE URL
     downloader(url)
-    print('You are obtaining stock fundamentals for ' + ticker[0] +
-          '. Please ensure that your internet is functional.')
-    pass
+    print(Color.RED + '\nYou are obtaining stocpricess for ' + ticker +
+          '. Please ensure that your internet is functional.' + Color.END)
+
 
 def stockstart():
-    tempticker = input(Color.BLUE + 'Enter Your Desired Ticker Symbol: ' + Color.END)
-    tempticker = tempticker.upper()
-    ticker.append(tempticker)
+    global ticker
+    ticker = ''
+    ticker = input(Color.BLUE + 'Enter Your Desired Ticker Symbol: ' + Color.END)
+    ticker = ticker.upper()
     filetype()
 
 
 def filetype():
     global filename
+    print('I should be getting the ticker right?')
+    print(ticker)
     tempfilename = []
     now = datetime.now()    
     dt_string = now.strftime("%d-%m-%Y %H:%M:%S")
+    tempfilename.append(', ')
     tempfilename.append(dt_string)
-    tempfilename.append(ticker[0])
+    tempfilename.append(', ')
+    tempfilename.append(ticker)
+    tempfilename.append(type)
     filename = ''.join(tempfilename)
 
 
 def downloader(url):
-    print('\n\nYour url is' + url)
+    print('\n\nYour url is ' + url)
     request = requests.get(url, allow_redirects=True)
     print(request.headers.get('content-type'))
     myfile = requests.get(url)
-    open(os.getcwd() + '/tmpdata/data:' + filename + '.json', 'wb').write(myfile.content)
+    open(os.getcwd() + '/tmpdata/data' + filename + '.json', 'wb').write(myfile.content)
 
 
 intro()
@@ -170,6 +175,8 @@ while True:
     UserChoice = input(Color.BLUE + 'Enter Your desired command, exculde the ticker symbol: ' + Color.END)
     if UserChoice == 'stocklookup':
         stocklookup()
+    if UserChoice == 'stockprice':
+        stockprice()
     if UserChoice == 'quit':
         quit()
     if UserChoice == 'q':
@@ -182,10 +189,8 @@ while True:
 
 
 """
-NEAR GOALS (kinda like a roadmap?): ADD MORE COMMANDS,
-: GET THE TYPE OFF FILE TO BE DISPLAYED IN NAME OF FILES (EX. A FILE WHICH HAS A TYPE OF OVERVIEW,
-WOULD HAVE THAT IN IT'S TITLE)
-: GET FILETYPE TO DISPLAY THE TICKER OF IT, ALONG WITH THE DATE.
+NEAR GOALS (kinda like a roadmap?)
+: ADD MORE COMMANDS
 : ADD METHOD OF GETTING STOCK PRICE EASILY
 
 MIDDLE GOALS:
@@ -193,4 +198,20 @@ MIDDLE GOALS:
 EX: IF I WERE TO TYPE IN stocklookup, AND THEN ENTER IN ibm AS MY TICKER, I WOULD LIKE FOR THE PROGRAM TO 
 PRINT OUT INFORMATION SUCH AS THE PE RATION/EPS/ETC IN LITTLE BITE SIZED PEICES.
 : GET PROPER DOCUMENTATION
+
+Ideas: Split project into 2, 
+1st project is that you use this program to gather information on macreconomics. Ex. I want to be able to 
+gather data on the financial sector and see when it is most and least profitable, when it is more and less volatile
+Ex2. I want to be able to see when the construction sector is more and least profitable, and see when the cashflow 
+high and low, and when it is least profitable
+
+Evantuall, I want to be able to graph it out for each sector and find corralations between the two
+
+
+2nd Project, make discord bot and use api to buy and sell make money and stocks
+
+
+
+
+
 """
